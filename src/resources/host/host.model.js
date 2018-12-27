@@ -39,7 +39,8 @@ const hostSchema = new mongoose.Schema(
       type: Boolean,
       required: true,
       default: false
-    }
+    },
+    photos: Array
   },
   { typestamps: true }
 );

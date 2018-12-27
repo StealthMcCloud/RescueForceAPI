@@ -24,7 +24,8 @@ const shelterSchema = new mongoose.Schema(
     capacity: {
       cats: Number,
       dogs: Number
-    }
+    },
+    photos: Array
   },
   { typestamps: true }
 );
