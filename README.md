@@ -1,4 +1,4 @@
-In order to connect a local deployment of this API to the remote database add some environmental variables.  Add these variables to the terminal that is running the API.
+In order to connect a local deployment of this API to the remote database, add some environmental variables.  Add these variables to the terminal that is running the API.
 1) type 'export DBUSER=****' into your terminal (replace *'s with user name)
 2) type 'export DBPASSWORD=***' into your terminal (replace *'s with password)
 
