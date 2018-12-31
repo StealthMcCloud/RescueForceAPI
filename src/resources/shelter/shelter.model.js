@@ -14,6 +14,11 @@ const shelterSchema = new mongoose.Schema(
       trim: true,
       maxlength: 70
     },
+    email: {
+      type: String,
+      required: true,
+      unique: true
+    },
     phoneNumber: {
       type: String,
       required: true,
