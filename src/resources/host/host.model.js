@@ -11,7 +11,6 @@ const hostSchema = new mongoose.Schema(
     shelterId: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: "shelter",
-      required: true
     },
     approved: {
       type: Boolean,
