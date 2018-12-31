@@ -44,4 +44,4 @@ const hostSchema = new mongoose.Schema(
   { typestamps: true }
 );
 
-module.exports.Host = mongoose.model("host", hostSchema);
+module.exports.Host = mongoose.model("Host", hostSchema);

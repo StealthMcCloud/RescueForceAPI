@@ -47,4 +47,4 @@ const animalSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports.Animal = mongoose.model("animal", animalSchema);
+module.exports.Animal = mongoose.model("Animal", animalSchema);

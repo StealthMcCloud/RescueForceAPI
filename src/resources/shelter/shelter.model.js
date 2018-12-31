@@ -29,4 +29,4 @@ const shelterSchema = new mongoose.Schema(
   { typestamps: true }
 );
 
-module.exports.Shelter = mongoose.model("shelter", shelterSchema);
+module.exports.Shelter = mongoose.model("Shelter", shelterSchema);
