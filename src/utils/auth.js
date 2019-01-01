@@ -72,7 +72,10 @@ const signin = async (req, res) => {
         return res.status(401).send(invalid);
       }
     }
-  } catch (err) {}
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500);
+  }
 };
 
 const signinHost = async (email, password) => {
