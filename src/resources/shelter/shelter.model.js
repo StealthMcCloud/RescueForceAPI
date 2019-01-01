@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require('bcrypt');
 
 const shelterSchema = new mongoose.Schema(
   {
@@ -19,6 +20,11 @@ const shelterSchema = new mongoose.Schema(
       required: true,
       unique: true
     },
+    password: {
+      type: String,
+      required: true,
+      trim: true
+    },
     phoneNumber: {
       type: String,
       required: true,
@@ -33,5 +39,30 @@ const shelterSchema = new mongoose.Schema(
   },
   { typestamps: true }
 );
+
+shelterSchema.pre('save', function(next) {
+  if (!this.isModified('password')) {
+    return next();
+  }
+  bcrypt.hash(this.password, 10, (err, hash) => {
+    if (err) {
+      return next(err);
+    }
+    this.password = hash;
+    next();
+  });
+});
+
+shelterSchema.methods.checkPassword = function(password) {
+  const passwordHash = this.password;
+  return new Promise((resolve, reject) => {
+    bcrypt.compare(password, passwordHash, (err, same) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve(same);
+    });
+  });
+};
 
 module.exports.Shelter = mongoose.model("Shelter", shelterSchema);
