@@ -8,6 +8,14 @@ const newToken = (id, type) => {
   return jwt.sign({ id, type }, JWT_SECRET, { expiresIn: "1h" });
 };
 
+const verifyToken = token =>
+  new Promise((resolve, reject) => {
+    jwt.verify(token, JWT_SECRET, (err, payload) => {
+      if (err) return reject(err);
+      resolve(payload);
+    });
+  });
+
 const register = async (req, res) => {
   const { name, address, phoneNumber, email, password } = req.body;
   if (!name || !address || !phoneNumber || !email || !password) {
@@ -105,9 +113,38 @@ const signinShelter = async (email, password) => {
   }
 };
 
-
+const protect = async (req, res, next) => {
+  const bearer = req.headers.authorization;
+  if (!bearer || !bearer.startsWith("Bearer ")) {
+    return res.sendStatus(401);
+  }
+  const token = bearer.split(" ")[1].trim();
+  try {
+    const payload = await verifyToken(token);
+    if (payload.type === HOST) {
+        const host = await Host.findById(payload.id).select('-password').lean().exec();
+        if (!host) {
+            return res.sendStatus(401);
+        }
+        req.user = host;
+        req.userType = HOST;
+        next();
+    } else if (payload.type === SHELTER) {
+        const shelter = await Shelter.findById(payload.id).select('-password').lean().exec();
+        if (!shelter) {
+            return res.sendStatus(401);
+        }
+        req.user = shelter;
+        req.userType = SHELTER;
+        next();
+    }
+  } catch (err) {
+    res.sendStatus(401);
+  }
+};
 
 module.exports = {
   register,
-  signin
+  signin,
+  protect
 };

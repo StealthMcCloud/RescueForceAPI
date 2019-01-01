@@ -1,19 +1,20 @@
 const express = require("express");
-const morgan = require('morgan');
+const morgan = require("morgan");
 const { connect } = require("./utils/db");
 const animalRouter = require("./resources/animal/animal.router");
 const hostRouter = require("./resources/host/host.router");
 const shelterRouter = require("./resources/shelter/shelter.router");
-const { register, signin } = require('./utils/auth');
+const { register, signin, protect } = require("./utils/auth");
 
 const app = express();
 const PORT = 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan('dev'));
+app.use(morgan("dev"));
 
-app.post('/register', register);
-app.post('/signin', signin);
+app.post("/register", register);
+app.post("/signin", signin);
+app.use("/api", protect);
 app.use("/api/hosts", hostRouter);
 app.use("/api/animals", animalRouter);
 app.use("/api/shelters", shelterRouter);
