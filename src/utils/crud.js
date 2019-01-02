@@ -1,7 +1,7 @@
-const getOneById = model => async (req, res) => {
+const getOne = model => async (req, res) => {
   try {
     const doc = await model
-      .findById(req.params.id)
+      .find({...req.filter, _id: req.params.id})
       .lean()
       .exec();
 
@@ -39,7 +39,7 @@ const getMany = model => async (req, res) => {
     let docs;
     if (!req.query.name) {
       docs = await model
-        .find({})
+        .find(req.filter)
         .lean()
         .exec();
     } else {
@@ -164,7 +164,7 @@ module.exports.crudControllers = model => ({
   removeOne: removeOne(model),
   updateOne: updateOne(model),
   getMany: getMany(model),
-  getOneById: getOneById(model),
+  getOne: getOne(model),
   getOneByName: getOneByName(model),
   createOne: createOne(model),
   getPhotos: getPhotos(model),

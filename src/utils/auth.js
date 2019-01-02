@@ -120,7 +120,7 @@ const classify = async (req, res, next) => {
   const bearer = req.headers.authorization;
   if (!bearer || !bearer.startsWith("Bearer ")) {
     // return res.sendStatus(401);
-    res.userType = DEFAULT;
+    req.userType = DEFAULT;
     return next();
   }
   const token = bearer.split(" ")[1].trim();
@@ -133,7 +133,7 @@ const classify = async (req, res, next) => {
         .exec();
       if (!host) {
         // return res.sendStatus(401);
-        res.userType = DEFAULT;
+        req.userType = DEFAULT;
         return next();
       }
       req.user = host;
@@ -146,7 +146,7 @@ const classify = async (req, res, next) => {
         .exec();
       if (!shelter) {
         // return res.sendStatus(401);
-        res.userType = DEFAULT;
+        req.userType = DEFAULT;
         return next();
       }
       req.user = shelter;
