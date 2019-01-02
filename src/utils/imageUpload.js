@@ -14,15 +14,26 @@ aws.config.update({
 
 const s3 = new aws.S3();
 
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
 const upload = multer({
   storage: multerS3({
     s3: s3,
     acl: "public-read",
     bucket,
+    contentType: multerS3.AUTO_CONTENT_TYPE,
     key: function(req, file, cb) {
       cb(null, Date.now().toString());
     }
-  })
+  }),
+  fileFilter: fileFilter,
+  limits: { fileSize: 200000 }
 });
 
 module.exports = upload;
