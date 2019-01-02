@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const { Host } = require("../resources/host/host.model");
 const { Shelter } = require("../resources/shelter/shelter.model");
 const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
-const { HOST, SHELTER } = require("../config").types;
+const { DEFAULT, HOST, SHELTER } = require("../config").types;
 
 const newToken = (id, type) => {
   return jwt.sign({ id, type }, JWT_SECRET, { expiresIn: "4h" });
@@ -116,10 +116,12 @@ const signinShelter = async (email, password) => {
   }
 };
 
-const protect = async (req, res, next) => {
+const classify = async (req, res, next) => {
   const bearer = req.headers.authorization;
   if (!bearer || !bearer.startsWith("Bearer ")) {
-    return res.sendStatus(401);
+    // return res.sendStatus(401);
+    req.userType = DEFAULT;
+    return next();
   }
   const token = bearer.split(" ")[1].trim();
   try {
@@ -130,7 +132,9 @@ const protect = async (req, res, next) => {
         .lean()
         .exec();
       if (!host) {
-        return res.sendStatus(401);
+        // return res.sendStatus(401);
+        req.userType = DEFAULT;
+        return next();
       }
       req.user = host;
       req.userType = HOST;
@@ -141,7 +145,9 @@ const protect = async (req, res, next) => {
         .lean()
         .exec();
       if (!shelter) {
-        return res.sendStatus(401);
+        // return res.sendStatus(401);
+        req.userType = DEFAULT;
+        return next();
       }
       req.user = shelter;
       req.userType = SHELTER;
@@ -152,8 +158,24 @@ const protect = async (req, res, next) => {
   }
 };
 
+const hostAndShelterOnly = (req, res, next) => {
+  if (!(req.userType === HOST || req.userType === SHELTER)) {
+    return res.sendStatus(401);
+  }
+  next();
+};
+
+const shelterOnly = (req, res, next) => {
+  if (!req.userType === SHELTER) {
+    return res.sendStatus(401);
+  }
+  next();
+};
+
 module.exports = {
   register,
   signin,
-  protect
+  classify,
+  hostAndShelterOnly,
+  shelterOnly
 };

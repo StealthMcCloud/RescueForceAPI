@@ -22,7 +22,7 @@ const animalSchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
-      enum: ["adoptable", "foster-only"],
+      enum: ["adoptable", "foster-only", "need-foster"],
       default: "foster-only"
     },
     species: {
