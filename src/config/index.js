@@ -4,19 +4,6 @@ const types = {
   SHELTER: "shelter"
 };
 
-const filters = {
-  defaultUser: {
-
-  },
-  hostUser: {
-
-  },
-  shelterUser: {
-
-  }
-};
-
 module.exports = {
-  filters,
   types
 };
