@@ -99,11 +99,75 @@ const removeOne = model => async (req, res) => {
   }
 };
 
+const getPhotos = model => async (req, res) => {
+  try {
+    const photos = await model
+      .findById(req.params.id)
+      .select("photos")
+      .lean()
+      .exec();
+
+    if (!photos) {
+      return res.status(400).end();
+    }
+
+    res.status(200).json({ data: photos });
+  } catch (e) {
+    console.error(e);
+    res.status(400).end();
+  }
+};
+
+const addPhoto = model => async (req, res) => {
+  try {
+    const photos = await model
+      .findByIdAndUpdate(
+        req.params.id,
+        { $push: { photos: req.files[0].location } },
+        { new: true }
+      )
+      .exec();
+
+    if (!photos) {
+      return res.status(400).end();
+    }
+
+    res.status(200).json({ data: photos });
+  } catch (e) {
+    console.error(e);
+    res.status(400).end();
+  }
+};
+
+const removePhoto = model => async (req, res) => {
+  try {
+    const photos = await model
+      .findByIdAndUpdate(
+        req.params.id,
+        { $pull: { photos: req.headers.photourl } },
+        { new: true }
+      )
+      .exec();
+
+    if (!photos) {
+      return res.status(400).end();
+    }
+
+    res.status(200).json({ data: photos });
+  } catch (e) {
+    console.error(e);
+    res.status(400).end();
+  }
+};
+
 module.exports.crudControllers = model => ({
   removeOne: removeOne(model),
   updateOne: updateOne(model),
   getMany: getMany(model),
   getOneById: getOneById(model),
   getOneByName: getOneByName(model),
-  createOne: createOne(model)
+  createOne: createOne(model),
+  getPhotos: getPhotos(model),
+  addPhoto: addPhoto(model),
+  removePhoto: removePhoto(model)
 });

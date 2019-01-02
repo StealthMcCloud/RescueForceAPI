@@ -5,7 +5,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
 const { HOST, SHELTER } = require("../config").types;
 
 const newToken = (id, type) => {
-  return jwt.sign({ id, type }, JWT_SECRET, { expiresIn: "1h" });
+  return jwt.sign({ id, type }, JWT_SECRET, { expiresIn: "4h" });
 };
 
 const verifyToken = token =>
@@ -125,21 +125,27 @@ const protect = async (req, res, next) => {
   try {
     const payload = await verifyToken(token);
     if (payload.type === HOST) {
-        const host = await Host.findById(payload.id).select('-password').lean().exec();
-        if (!host) {
-            return res.sendStatus(401);
-        }
-        req.user = host;
-        req.userType = HOST;
-        next();
+      const host = await Host.findById(payload.id)
+        .select("-password")
+        .lean()
+        .exec();
+      if (!host) {
+        return res.sendStatus(401);
+      }
+      req.user = host;
+      req.userType = HOST;
+      next();
     } else if (payload.type === SHELTER) {
-        const shelter = await Shelter.findById(payload.id).select('-password').lean().exec();
-        if (!shelter) {
-            return res.sendStatus(401);
-        }
-        req.user = shelter;
-        req.userType = SHELTER;
-        next();
+      const shelter = await Shelter.findById(payload.id)
+        .select("-password")
+        .lean()
+        .exec();
+      if (!shelter) {
+        return res.sendStatus(401);
+      }
+      req.user = shelter;
+      req.userType = SHELTER;
+      next();
     }
   } catch (err) {
     res.sendStatus(401);

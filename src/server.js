@@ -14,10 +14,7 @@ app.use(morgan("dev"));
 
 app.post("/register", register);
 app.post("/signin", signin);
-// app.use("/api", protect);
 app.use("/api/hosts", protect, hostRouter);
-// app.get('/api/animals', animalRouter);
-// app.get('/api/animals/:id', animalRouter);
 app.use("/api/animals", animalRouter);
 app.use("/api/shelters", protect, shelterRouter);
 

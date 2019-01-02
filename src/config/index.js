@@ -1,8 +1,8 @@
 const types = {
-    HOST: 'host',
-    SHELTER: 'shelter'
-}
+  HOST: "host",
+  SHELTER: "shelter"
+};
 
 module.exports = {
-    types
+  types
 };

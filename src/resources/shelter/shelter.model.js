@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 
 const shelterSchema = new mongoose.Schema(
   {
@@ -36,13 +36,13 @@ const shelterSchema = new mongoose.Schema(
       cats: Number,
       dogs: Number
     },
-    photos: Array
+    photos: [{ type: String }]
   },
   { typestamps: true }
 );
 
-shelterSchema.pre('save', function(next) {
-  if (!this.isModified('password')) {
+shelterSchema.pre("save", function(next) {
+  if (!this.isModified("password")) {
     return next();
   }
   bcrypt.hash(this.password, 10, (err, hash) => {
