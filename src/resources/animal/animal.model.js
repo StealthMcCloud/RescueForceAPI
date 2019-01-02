@@ -43,7 +43,8 @@ const animalSchema = new mongoose.Schema(
     animalFriendly: Boolean,
     peopleFriendly: Boolean,
     specialDiet: Boolean,
-    dietNotes: String
+    dietNotes: String,
+    photos: Array
   },
   { timestamps: true }
 );
