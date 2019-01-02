@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const { Host } = require("../resources/host/host.model");
 const { Shelter } = require("../resources/shelter/shelter.model");
-const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
+const JWT_SECRET = process.env.JWT_SECRET;
 const { DEFAULT, HOST, SHELTER } = require("../config").types;
 
 const newToken = (id, type) => {
