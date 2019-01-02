@@ -4,6 +4,7 @@ const { connect } = require("./utils/db");
 const animalRouter = require("./resources/animal/animal.router");
 const hostRouter = require("./resources/host/host.router");
 const shelterRouter = require("./resources/shelter/shelter.router");
+const imageRouter = require('./resources/images/image.router');
 const { register, signin, protect } = require("./utils/auth");
 
 const app = express();
@@ -20,6 +21,7 @@ app.use("/api/hosts", protect, hostRouter);
 // app.get('/api/animals/:id', animalRouter);
 app.use("/api/animals", animalRouter);
 app.use("/api/shelters", protect, shelterRouter);
+app.use('/api/images/', imageRouter);
 
 module.exports.start = async () => {
   try {
