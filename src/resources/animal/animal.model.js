@@ -35,6 +35,7 @@ const animalSchema = new mongoose.Schema(
       required: true,
       enum: ["male", "female"]
     },
+    photos: [{ type: String }],
     breed: String,
     specialNeeds: Boolean,
     pregnant: Boolean,

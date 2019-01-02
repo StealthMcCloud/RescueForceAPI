@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 
 const hostSchema = new mongoose.Schema(
   {
@@ -11,7 +11,7 @@ const hostSchema = new mongoose.Schema(
     },
     shelterId: {
       type: mongoose.SchemaTypes.ObjectId,
-      ref: "shelter",
+      ref: "shelter"
     },
     approved: {
       type: Boolean,
@@ -49,13 +49,14 @@ const hostSchema = new mongoose.Schema(
       type: Boolean,
       required: true,
       default: false
-    }
+    },
+    photos: [{ type: String }]
   },
   { typestamps: true }
 );
 
-hostSchema.pre('save', function(next) {
-  if (!this.isModified('password')) {
+hostSchema.pre("save", function(next) {
+  if (!this.isModified("password")) {
     return next();
   }
   bcrypt.hash(this.password, 10, (err, hash) => {
