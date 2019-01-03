@@ -5,7 +5,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const { DEFAULT, HOST, SHELTER } = require("../config").types;
 
 const newToken = (id, type) => {
-  return jwt.sign({ id, type }, JWT_SECRET, { expiresIn: "4h" });
+  return jwt.sign({ id, type }, JWT_SECRET, { expiresIn: "30d" });
 };
 
 const verifyToken = token =>
