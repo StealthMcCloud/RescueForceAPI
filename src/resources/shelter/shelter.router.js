@@ -1,14 +1,14 @@
 const express = require("express");
 const controllers = require("./shelter.controllers");
 const upload = require("../../utils/imageUpload");
-const { shelterOnly } = require("../../utils/auth");
+const { hostAndShelterOnly, shelterOnly } = require("../../utils/auth");
 
 const router = express.Router();
 
 router
   .route("/")
   .get(controllers.getMany)
-  .post(shelterOnly, controllers.createOne);
+  .post(hostAndShelterOnly, controllers.createOne);
 
 router
   .route("/:id")
