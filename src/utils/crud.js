@@ -44,7 +44,7 @@ const getMany = model => async (req, res) => {
         .exec();
     } else {
       docs = await model
-        .find({ name: req.query.name })
+        .find({...req.filter, name: req.query.name })
         .lean()
         .exec();
     }

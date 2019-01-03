@@ -8,7 +8,7 @@ const filters = {
     if (req.userType === HOST) {
       return addFilter({ _id: req.user._id })(req, res, next);
     } else if (req.userType === SHELTER) {
-      return addFilter({...req.body.filters})(req, res, next);
+      return addFilter({...req.query.filter})(req, res, next);
     } else {
       res.sendStatus(500);
     }

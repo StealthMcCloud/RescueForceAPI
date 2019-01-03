@@ -123,6 +123,7 @@ const classify = async (req, res, next) => {
     req.userType = DEFAULT;
     return next();
   }
+  console.log('bearer: ' + bearer);
   const token = bearer.split(" ")[1].trim();
   try {
     const payload = await verifyToken(token);
@@ -154,11 +155,13 @@ const classify = async (req, res, next) => {
       next();
     }
   } catch (err) {
+    console.log(err);
     res.sendStatus(401);
   }
 };
 
 const hostAndShelterOnly = (req, res, next) => {
+  console.log('hostAndShelterOnly');
   if (!(req.userType === HOST || req.userType === SHELTER)) {
     return res.sendStatus(401);
   }
@@ -166,6 +169,7 @@ const hostAndShelterOnly = (req, res, next) => {
 };
 
 const shelterOnly = (req, res, next) => {
+  console.log('shelter only');
   if (!req.userType === SHELTER) {
     return res.sendStatus(401);
   }
