@@ -1,16 +1,23 @@
 const express = require("express");
 const morgan = require("morgan");
+const cors = require("cors");
 const { connect } = require("./utils/db");
 const animalRouter = require("./resources/animal/animal.router");
 const hostRouter = require("./resources/host/host.router");
 const shelterRouter = require("./resources/shelter/shelter.router");
-const { register, signin, classify, hostAndShelterOnly } = require("./utils/auth");
+const {
+  register,
+  signin,
+  classify,
+  hostAndShelterOnly
+} = require("./utils/auth");
 
 const app = express();
 const PORT = 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
+app.use(cors());
 
 app.post("/register", register);
 app.post("/signin", signin);
