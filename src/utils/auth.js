@@ -5,7 +5,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const { DEFAULT, HOST, SHELTER } = require("../config").types;
 
 const newToken = (id, type) => {
-  return jwt.sign({ id, type }, JWT_SECRET, { expiresIn: "4h" });
+  return jwt.sign({ id, type }, JWT_SECRET, { expiresIn: "30d" });
 };
 
 const verifyToken = token =>
@@ -41,32 +41,32 @@ const signin = async (req, res) => {
   }
   const invalid = { message: "invalid email and password combination" };
   try {
-    const hostSigninAttempt = await signinHost(email, password);
-    console.log(hostSigninAttempt);
-    if (hostSigninAttempt) {
-      if (hostSigninAttempt.err) {
+    const host = await signinHost(email, password);
+    if (host) {
+      if (host.err) {
         return res.sendStatus(500);
       }
-      if (!hostSigninAttempt.id) {
+      if (!host.id) {
         return res.status(401).send(invalid);
       }
-      if (hostSigninAttempt.id) {
-        const token = newToken(hostSigninAttempt.id, HOST);
-        return res.status(201).send({ token });
+      if (host.id) {
+        const token = newToken(host.id, HOST);
+        return res.status(201).send({ token, data: host.data, type: HOST });
       }
     } else {
-      const shelterSigninAttempt = await signinShelter(email, password);
-      console.log(shelterSigninAttempt);
-      if (shelterSigninAttempt) {
-        if (shelterSigninAttempt.err) {
+      const shelter = await signinShelter(email, password);
+      if (shelter) {
+        if (shelter.err) {
           return res.sendStatus(500);
         }
-        if (!shelterSigninAttempt.id) {
+        if (!shelter.id) {
           return res.status(401).send(invalid);
         }
-        if (shelterSigninAttempt.id) {
-          const token = newToken(shelterSigninAttempt.id, SHELTER);
-          return res.status(201).send({ token });
+        if (shelter.id) {
+          const token = newToken(shelter.id, SHELTER);
+          return res
+            .status(201)
+            .send({ token, data: shelter.data, type: SHELTER });
         }
       } else {
         return res.status(401).send(invalid);
@@ -78,38 +78,36 @@ const signin = async (req, res) => {
   }
 };
 
-const signinHost = async (email, password) => {
+const signinHost = async (email, hostPassword) => {
   try {
-    const host = await Host.findOne({ email })
-      .select("email password")
-      .exec();
+    const host = await Host.findOne({ email }).exec();
     if (!host) {
       return null;
     }
-    const match = await host.checkPassword(password);
+    const match = await host.checkPassword(hostPassword);
     if (!match) {
       return { err: null, id: null };
     }
-    return { err: null, id: host._id };
+    const { password, ...data} = JSON.parse(JSON.stringify(host));
+    return { err: null, id: host._id, data};
   } catch (err) {
     console.error(err);
     return { err };
   }
 };
 
-const signinShelter = async (email, password) => {
+const signinShelter = async (email, shelterPassword) => {
   try {
-    const shelter = await Shelter.findOne({ email })
-      .select("email password")
-      .exec();
+    const shelter = await Shelter.findOne({ email }).exec();
     if (!shelter) {
       return null;
     }
-    const match = await shelter.checkPassword(password);
+    const match = await shelter.checkPassword(shelterPassword);
     if (!match) {
       return { err: null, id: null };
     }
-    return { err: null, id: shelter._id };
+    const { password, ...data} = JSON.parse(JSON.stringify(shelter));
+    return { err: null, id: shelter._id, data: data };
   } catch (err) {
     console.error(err);
     return { err };
@@ -119,7 +117,6 @@ const signinShelter = async (email, password) => {
 const classify = async (req, res, next) => {
   const bearer = req.headers.authorization;
   if (!bearer || !bearer.startsWith("Bearer ")) {
-    // return res.sendStatus(401);
     req.userType = DEFAULT;
     return next();
   }
@@ -133,7 +130,6 @@ const classify = async (req, res, next) => {
         .lean()
         .exec();
       if (!host) {
-        // return res.sendStatus(401);
         req.userType = DEFAULT;
         return next();
       }
@@ -146,7 +142,6 @@ const classify = async (req, res, next) => {
         .lean()
         .exec();
       if (!shelter) {
-        // return res.sendStatus(401);
         req.userType = DEFAULT;
         return next();
       }
