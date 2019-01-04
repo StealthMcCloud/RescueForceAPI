@@ -1,7 +1,7 @@
 const getOne = model => async (req, res) => {
   try {
     const doc = await model
-      .find({...req.filter, _id: req.params.id})
+      .find({ ...req.filter, _id: req.params.id })
       .lean()
       .exec();
 
@@ -39,12 +39,12 @@ const getMany = model => async (req, res) => {
     let docs;
     if (!req.query.name) {
       docs = await model
-        .find(req.filter)
+        .find({ ...req.filter })
         .lean()
         .exec();
     } else {
       docs = await model
-        .find({...req.filter, name: req.query.name })
+        .find({ ...req.filter, name: req.query.name })
         .lean()
         .exec();
     }
