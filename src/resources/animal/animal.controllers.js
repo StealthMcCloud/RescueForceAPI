@@ -5,7 +5,7 @@ const addFilter = require("../../utils/filter");
 
 const filters = {
   viewAnimals: (req, res, next) => {
-    const filter = JSON.parse(req.query.filter);
+    const filter =  req.query.filter ? JSON.parse(req.query.filter) : {};
     if (req.userType === DEFAULT) {
       return addFilter({ ...filter, status: "adoptable" })(req, res, next);
     } else if (req.userType === HOST) {
