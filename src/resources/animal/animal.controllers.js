@@ -5,12 +5,13 @@ const addFilter = require("../../utils/filter");
 
 const filters = {
   viewAnimals: (req, res, next) => {
+    const filter = JSON.parse(req.query.filter);
     if (req.userType === DEFAULT) {
-      return addFilter({ ...req.query.filter, status: "adoptable" })(req, res, next);
+      return addFilter({ ...filter, status: "adoptable" })(req, res, next);
     } else if (req.userType === HOST) {
-      return addFilter({ ...req.query.filter, status: "need-foster" })(req, res, next);
+      return addFilter({ ...filter, status: "need-foster" })(req, res, next);
     } else if (req.userType === SHELTER) {
-      return addFilter({...req.query.filter})(req, res, next);
+      return addFilter({ ...filter })(req, res, next);
     } else {
       res.sendStatus(500);
     }
