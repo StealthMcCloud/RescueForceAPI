@@ -65,8 +65,8 @@ const signin = async (req, res) => {
         if (shelter.id) {
           const token = newToken(shelter.id, SHELTER);
           return res
-            .status(201)
-            .send({ token, data: shelter.data, type: SHELTER });
+          .status(201)
+          .send({ token, data: shelter.data, type: SHELTER });
         }
       } else {
         return res.status(401).send(invalid);
@@ -76,6 +76,36 @@ const signin = async (req, res) => {
     console.error(err);
     res.sendStatus(500);
   }
+};
+
+const validateToken = async (req, res) => {
+  const token = req.body.token;
+  if (!token || token == "") {
+    return res.sendStatus(401);
+  }
+  
+  jwt.verify(token, JWT_SECRET, async (err, tokenData) => {
+    if (err) {
+      return res.sendStatus(500);
+    }
+    
+    let user;
+    
+    try {
+      if (tokenData.type === HOST) {
+        user = await Host.findById(tokenData.id).lean().exec();
+      } else if (tokenData.type === SHELTER) {
+        user = await Shelter.findById(tokenData.id).lean().exec();
+      }
+      const { password, ...data } = JSON.parse(JSON.stringify(user));
+      if (user) {
+        return res.status(201).send({ token, data, type: tokenData.type });
+      }
+    } catch (error) {
+      console.error(error);
+      return res.sendStatus(500);
+    }
+  });
 };
 
 const signinHost = async (email, hostPassword) => {
@@ -88,8 +118,8 @@ const signinHost = async (email, hostPassword) => {
     if (!match) {
       return { err: null, id: null };
     }
-    const { password, ...data} = JSON.parse(JSON.stringify(host));
-    return { err: null, id: host._id, data};
+    const { password, ...data } = JSON.parse(JSON.stringify(host));
+    return { err: null, id: host._id, data };
   } catch (err) {
     console.error(err);
     return { err };
@@ -106,7 +136,7 @@ const signinShelter = async (email, shelterPassword) => {
     if (!match) {
       return { err: null, id: null };
     }
-    const { password, ...data} = JSON.parse(JSON.stringify(shelter));
+    const { password, ...data } = JSON.parse(JSON.stringify(shelter));
     return { err: null, id: shelter._id, data: data };
   } catch (err) {
     console.error(err);
@@ -120,7 +150,7 @@ const classify = async (req, res, next) => {
     req.userType = DEFAULT;
     return next();
   }
-  console.log('bearer: ' + bearer);
+  console.log("bearer: " + bearer);
   const token = bearer.split(" ")[1].trim();
   try {
     const payload = await verifyToken(token);
@@ -156,7 +186,7 @@ const classify = async (req, res, next) => {
 };
 
 const hostAndShelterOnly = (req, res, next) => {
-  console.log('hostAndShelterOnly');
+  console.log("hostAndShelterOnly");
   if (!(req.userType === HOST || req.userType === SHELTER)) {
     return res.sendStatus(401);
   }
@@ -164,7 +194,7 @@ const hostAndShelterOnly = (req, res, next) => {
 };
 
 const shelterOnly = (req, res, next) => {
-  console.log('shelter only');
+  console.log("shelter only");
   if (!req.userType === SHELTER) {
     return res.sendStatus(401);
   }
@@ -176,5 +206,6 @@ module.exports = {
   signin,
   classify,
   hostAndShelterOnly,
-  shelterOnly
+  shelterOnly,
+  validateToken
 };

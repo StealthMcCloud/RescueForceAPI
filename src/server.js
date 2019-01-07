@@ -9,7 +9,8 @@ const {
   register,
   signin,
   classify,
-  hostAndShelterOnly
+  hostAndShelterOnly,
+  validateToken
 } = require("./utils/auth");
 
 const app = express();
@@ -20,6 +21,7 @@ app.use(morgan("dev"));
 app.use(cors());
 
 app.post("/register", register);
+app.post("/validate", validateToken);
 app.post("/signin", signin);
 app.use("/api", classify);
 app.use("/api/hosts", hostAndShelterOnly, hostRouter);
