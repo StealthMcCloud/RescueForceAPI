@@ -101,19 +101,20 @@ const removeOne = model => async (req, res) => {
 
 const addPhoto = model => async (req, res) => {
   try {
-    const photos = await model
+    const result = await model
       .findByIdAndUpdate(
         req.params.id,
         { $push: { photos: { $each: req.files.map(file => file.location) } } },
         { new: true }
       )
+      .lean()
       .exec();
 
-    if (!photos) {
+    if (!result) {
       return res.status(400).end();
     }
 
-    res.status(200).json({ data: photos });
+    res.status(200).json({ data: result });
   } catch (err) {
     console.error(err);
     res.status(400).end();
