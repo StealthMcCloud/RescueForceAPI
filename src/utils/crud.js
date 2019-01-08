@@ -99,25 +99,6 @@ const removeOne = model => async (req, res) => {
   }
 };
 
-// const getPhotos = model => async (req, res) => {
-//   try {
-//     const photos = await model
-//       .findById(req.params.id)
-//       .select("photos")
-//       .lean()
-//       .exec();
-
-//     if (!photos) {
-//       return res.status(400).end();
-//     }
-
-//     res.status(200).json({ data: photos });
-//   } catch (e) {
-//     console.error(e);
-//     res.status(400).end();
-//   }
-// };
-
 const addPhoto = model => async (req, res) => {
   try {
     const photos = await model
@@ -147,7 +128,7 @@ const replacePhoto = model => async (req, res) => {
         { photos: [req.file.location] },
         { new: true }
       )
-      .select('-password')
+      .select("-password")
       .lean()
       .exec();
     if (!doc) {
@@ -159,27 +140,6 @@ const replacePhoto = model => async (req, res) => {
     res.sendStatus(400);
   }
 };
-
-// const removePhoto = model => async (req, res) => {
-//   try {
-//     const photos = await model
-//       .findByIdAndUpdate(
-//         req.params.id,
-//         { $pull: { photos: req.headers.photourl } },
-//         { new: true }
-//       )
-//       .exec();
-
-//     if (!photos) {
-//       return res.status(400).end();
-//     }
-
-//     res.status(200).json({ data: photos });
-//   } catch (e) {
-//     console.error(e);
-//     res.status(400).end();
-//   }
-// };
 
 module.exports.crudControllers = model => ({
   removeOne: removeOne(model),
