@@ -11,7 +11,7 @@ const hostSchema = new mongoose.Schema(
     },
     shelterId: {
       type: mongoose.SchemaTypes.ObjectId,
-      ref: "shelter"
+      ref: "Shelter"
     },
     approved: {
       type: Boolean,

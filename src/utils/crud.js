@@ -40,11 +40,14 @@ const getMany = model => async (req, res) => {
     if (!req.query.name) {
       docs = await model
         .find({ ...req.filter })
+        .populate('hostId')
+        .populate('shelterId')
         .lean()
         .exec();
     } else {
       docs = await model
         .find({ ...req.filter, name: req.query.name })
+        .populate('host')
         .lean()
         .exec();
     }
