@@ -148,8 +148,6 @@ module.exports.crudControllers = model => ({
   getOne: getOne(model),
   getOneByName: getOneByName(model),
   createOne: createOne(model),
-  // getPhotos: getPhotos(model),
   addPhoto: addPhoto(model),
-  // removePhoto: removePhoto(model)
   replacePhoto: replacePhoto(model)
 });
