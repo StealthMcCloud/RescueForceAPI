@@ -18,8 +18,6 @@ router
 
 router
   .route("/:id/photos")
-  // .get(controllers.getPhotos)
-  .put(shelterOnly, upload.single("image"), controllers.addPhoto)
-  // .delete(shelterOnly, controllers.removePhoto);
+  .put(shelterOnly, upload.single("image"), controllers.replacePhoto)
 
 module.exports = router;

@@ -18,8 +18,6 @@ router
 
 router
   .route("/:id/photos")
-  // .get(controllers.getPhotos)
-  .patch(upload.array("image", 5), controllers.addPhoto)
-  // .delete(controllers.removePhoto);
+  .patch(upload.array("image", 7), controllers.addPhoto)
 
 module.exports = router;
