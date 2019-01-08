@@ -13,13 +13,11 @@ router
 router
   .route("/:id")
   .get(filters.viewHost, controllers.getOne)
-  .put(filters.viewHost, controllers.updateOne)
+  .patch(filters.viewHost, controllers.updateOne)
   .delete(shelterOnly, controllers.removeOne);
 
 router
   .route("/:id/photos")
-  .get(controllers.getPhotos)
-  .post(hostAndShelterOnly, upload.array("image", 1), controllers.addPhoto)
-  .delete(hostAndShelterOnly, controllers.removePhoto);
+  .put(hostAndShelterOnly, upload.single("image"), controllers.replacePhoto)
 
 module.exports = router;
