@@ -150,7 +150,6 @@ const classify = async (req, res, next) => {
     req.userType = DEFAULT;
     return next();
   }
-  console.log("bearer: " + bearer);
   const token = bearer.split(" ")[1].trim();
   try {
     const payload = await verifyToken(token);

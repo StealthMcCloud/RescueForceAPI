@@ -11,12 +11,12 @@ const animalSchema = new mongoose.Schema(
     dob: Date,
     shelterId: {
       type: mongoose.SchemaTypes.ObjectId,
-      ref: "shelter",
+      ref: "Shelter",
       required: true
     },
     hostId: {
       type: mongoose.SchemaTypes.ObjectId,
-      ref: "host",
+      ref: "Host",
       required: true
     },
     status: {
@@ -44,7 +44,7 @@ const animalSchema = new mongoose.Schema(
     peopleFriendly: Boolean,
     specialDiet: Boolean,
     dietNotes: String,
-    photos: Array
+    photos: [{ type: String }]
   },
   { timestamps: true }
 );

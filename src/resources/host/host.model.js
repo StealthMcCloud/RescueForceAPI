@@ -11,7 +11,7 @@ const hostSchema = new mongoose.Schema(
     },
     shelterId: {
       type: mongoose.SchemaTypes.ObjectId,
-      ref: "shelter"
+      ref: "Shelter"
     },
     approved: {
       type: Boolean,
@@ -50,8 +50,8 @@ const hostSchema = new mongoose.Schema(
       required: true,
       default: false
     },
-    photos: [{ type: String }]
-
+    photos: [{ type: String }],
+    animals: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Animal" }]
   },
   { typestamps: true }
 );
