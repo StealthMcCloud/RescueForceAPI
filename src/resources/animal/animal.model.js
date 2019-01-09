@@ -16,8 +16,7 @@ const animalSchema = new mongoose.Schema(
     },
     hostId: {
       type: mongoose.SchemaTypes.ObjectId,
-      ref: "Host",
-      required: true
+      ref: "Host"
     },
     status: {
       type: String,
