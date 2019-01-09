@@ -1,7 +1,11 @@
+const { Host } = require('../resources/host/host.model');
+
 const getOne = model => async (req, res) => {
   try {
     const doc = await model
       .find({ ...req.filter, _id: req.params.id })
+      .populate('hostId')
+      .populate('shelterId')
       .lean()
       .exec();
 
@@ -20,6 +24,8 @@ const getOneByName = model => async (req, res) => {
   try {
     const doc = await model
       .findOne({ name: req.body.name })
+      .populate('hostId')
+      .populate('shelterId')     
       .lean()
       .exec();
 
@@ -47,7 +53,8 @@ const getMany = model => async (req, res) => {
     } else {
       docs = await model
         .find({ ...req.filter, name: req.query.name })
-        .populate('host')
+        .populate('hostId')
+        .populate('shelterId')
         .lean()
         .exec();
     }
@@ -62,6 +69,9 @@ const getMany = model => async (req, res) => {
 const createOne = model => async (req, res) => {
   try {
     const doc = await model.create({ ...req.body });
+    if (model.modelName === 'Animal') {
+      await Host.findByIdAndUpdate(doc.hostId, {$push: {animals: doc._id}})
+    }
     res.status(201).json({ data: doc });
   } catch (err) {
     console.error(err);
@@ -73,6 +83,8 @@ const updateOne = model => async (req, res) => {
   try {
     const updatedDoc = await model
       .findByIdAndUpdate(req.params.id, req.body, { new: true })
+      .populate('hostId')
+      .populate('shelterId')
       .lean()
       .exec();
 
@@ -110,6 +122,8 @@ const addPhoto = model => async (req, res) => {
         { $push: { photos: { $each: req.files.map(file => file.location) } } },
         { new: true }
       )
+      .populate('hostId')
+      .populate('shelterId')
       .lean()
       .exec();
 
@@ -133,6 +147,8 @@ const replacePhoto = model => async (req, res) => {
         { new: true }
       )
       .select("-password")
+      .populate('hostId')
+      .populate('shelterId')
       .lean()
       .exec();
     if (!doc) {
