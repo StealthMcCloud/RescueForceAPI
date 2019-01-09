@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
+const DEFAULT_SHELTER = "5c2f6d0731cf9d0964b1626d";
+
 const hostSchema = new mongoose.Schema(
   {
     name: {
@@ -11,7 +13,8 @@ const hostSchema = new mongoose.Schema(
     },
     shelterId: {
       type: mongoose.SchemaTypes.ObjectId,
-      ref: "Shelter"
+      ref: "Shelter",
+      default: DEFAULT_SHELTER
     },
     approved: {
       type: Boolean,
