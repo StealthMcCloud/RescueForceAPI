@@ -110,7 +110,7 @@ const validateToken = async (req, res) => {
 
 const signinHost = async (email, hostPassword) => {
   try {
-    const host = await Host.findOne({ email }).exec();
+    const host = await Host.findOne({ email }).populate('shelterId').exec();
     if (!host) {
       return null;
     }
