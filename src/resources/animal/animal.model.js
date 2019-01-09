@@ -25,7 +25,7 @@ const animalSchema = new mongoose.Schema(
       default: "foster-only"
     },
     species: {
-     type: String,
+      type: String,
       required: true,
       enum: ["dog", "cat"]
     },
