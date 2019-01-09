@@ -8,9 +8,7 @@ const filters = {
     const filter =  req.query.filter ? JSON.parse(req.query.filter) : {};
     if (req.userType === DEFAULT) {
       return addFilter({ ...filter, status: "adoptable" })(req, res, next);
-    } else if (req.userType === HOST) {
-      return addFilter({ ...filter, status: "need-foster" })(req, res, next);
-    } else if (req.userType === SHELTER) {
+    } else if (req.userType === HOST || req.userType === SHELTER) {
       return addFilter({ ...filter })(req, res, next);
     } else {
       res.sendStatus(500);
