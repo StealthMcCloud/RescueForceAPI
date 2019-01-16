@@ -17,13 +17,12 @@ const animalSchema = new mongoose.Schema(
     hostId: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: "Host",
-      required: true
     },
     status: {
       type: String,
       required: true,
       enum: ["adoptable", "foster-only", "need-foster"],
-      default: "foster-only"
+      default: "need-foster"
     },
     species: {
       type: String,
