@@ -1,5 +1,7 @@
 const express = require("express");
-const controllers = require("./host.controllers");
+const { controllers, filters } = require("./host.controllers");
+const upload = require("../../utils/imageUpload");
+const { hostAndShelterOnly, shelterOnly } = require("../../utils/auth");
 
 const router = express.Router();
 
@@ -10,8 +12,12 @@ router
 
 router
   .route("/:id")
-  .get(controllers.getOneById)
-  .put(controllers.updateOne)
-  .delete(controllers.removeOne);
+  .get(filters.viewHost, controllers.getOne)
+  .patch(filters.viewHost, controllers.updateOne)
+  .delete(shelterOnly, controllers.removeOne);
+
+router
+  .route("/:id/photos")
+  .put(hostAndShelterOnly, upload.single("image"), controllers.replacePhoto)
 
 module.exports = router;

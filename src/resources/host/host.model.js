@@ -1,4 +1,7 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+
+const DEFAULT_SHELTER = "5c2f6d0731cf9d0964b1626d";
 
 const hostSchema = new mongoose.Schema(
   {
@@ -10,8 +13,8 @@ const hostSchema = new mongoose.Schema(
     },
     shelterId: {
       type: mongoose.SchemaTypes.ObjectId,
-      ref: "shelter",
-      required: true
+      ref: "Shelter",
+      default: DEFAULT_SHELTER
     },
     approved: {
       type: Boolean,
@@ -23,6 +26,16 @@ const hostSchema = new mongoose.Schema(
       required: true,
       trim: true,
       maxlength: 70
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    password: {
+      type: String,
+      required: true,
+      trim: true
     },
     phoneNumber: {
       type: String,
@@ -39,9 +52,36 @@ const hostSchema = new mongoose.Schema(
       type: Boolean,
       required: true,
       default: false
-    }
+    },
+    photos: [{ type: String }],
+    animals: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Animal" }]
   },
   { typestamps: true }
 );
 
-module.exports.Host = mongoose.model("host", hostSchema);
+hostSchema.pre("save", function(next) {
+  if (!this.isModified("password")) {
+    return next();
+  }
+  bcrypt.hash(this.password, 10, (err, hash) => {
+    if (err) {
+      return next(err);
+    }
+    this.password = hash;
+    next();
+  });
+});
+
+hostSchema.methods.checkPassword = function(password) {
+  const passwordHash = this.password;
+  return new Promise((resolve, reject) => {
+    bcrypt.compare(password, passwordHash, (err, same) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve(same);
+    });
+  });
+};
+
+module.exports.Host = mongoose.model("Host", hostSchema);

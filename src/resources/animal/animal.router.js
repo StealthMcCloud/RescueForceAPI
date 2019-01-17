@@ -1,17 +1,23 @@
 const express = require("express");
-const controllers = require("./animal.controllers");
+const { controllers, filters } = require("./animal.controllers");
+const upload = require("../../utils/imageUpload");
+const { hostAndShelterOnly, shelterOnly } = require("../../utils/auth");
 
 const router = express.Router();
 
 router
   .route("/")
-  .get(controllers.getMany)
-  .post(controllers.createOne);
+  .get(filters.viewAnimals, controllers.getMany)
+  .post(shelterOnly, controllers.createOne);
+
+router
+  .route("/:id/photos")
+  .patch(upload.array("images", 7), controllers.addPhoto);
 
 router
   .route("/:id")
-  .get(controllers.getOneById)
-  .put(controllers.updateOne)
-  .delete(controllers.removeOne);
+  .get(filters.viewAnimal, controllers.getOne)
+  .patch(hostAndShelterOnly, controllers.updateOne)
+  .delete(shelterOnly, controllers.removeOne);
 
 module.exports = router;
